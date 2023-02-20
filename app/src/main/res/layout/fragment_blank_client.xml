@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="35dp"
+    tools:context=".ui.client.BlankClientFragment">
+
+    <Button
+        android:id="@+id/delete_client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/red_button"
+        android:text="@string/delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_address">
+
+    </Button>
+
+    <Button
+        android:id="@+id/save_client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/green_button"
+        android:text="@string/save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_address">
+
+    </Button>
+
+    <EditText
+        android:id="@+id/client_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text="@string/name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/client_host"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text="@string/host"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_name" />
+
+    <EditText
+        android:id="@+id/client_inn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text="@string/inn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_host" />
+
+    <EditText
+        android:id="@+id/client_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text="@string/address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/client_inn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

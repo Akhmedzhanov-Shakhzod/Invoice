@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+    <fragment
+        android:id="@+id/nav_client"
+        android:name="com.example.invoice.ui.client.ClientFragment"
+        android:label="@string/menu_client"
+        tools:layout="@layout/fragment_client" >
+        <action
+            android:id="@+id/action_nav_client_to_addClientFragment"
+            app:destination="@id/nav_add_client" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_product"
+        android:name="com.example.invoice.ui.product.ProductFragment"
+        android:label="@string/menu_product"
+        tools:layout="@layout/fragment_product">
+        <action
+            android:id="@+id/action_nav_product_to_nav_add_product"
+            app:destination="@id/nav_add_product" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.invoice.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_add_product"
+        android:name="com.example.invoice.ui.product.AddProductFragment"
+        android:label="@string/menu_add_product"
+        tools:layout="@layout/fragment_add_product" />
+    <fragment
+        android:id="@+id/blankProductFragment"
+        android:name="com.example.invoice.ui.product.BlankProductFragment"
+        android:label="@string/menu_edit_product"
+        tools:layout="@layout/fragment_blank_product" >
+        <argument android:name="product_id" />
+        <argument android:name="product_name" />
+        <argument android:name="product_price"/>
+        <action
+            android:id="@+id/action_blankProductFragment_to_nav_product"
+            app:destination="@id/nav_product" />
+    </fragment>
+    <fragment
+        android:id="@+id/blankClientFragment"
+        android:name="com.example.invoice.ui.client.BlankClientFragment"
+        android:label="@string/menu_edit_client"
+        tools:layout="@layout/fragment_blank_client" >
+        <argument android:name="client_name" />
+        <argument android:name="client_id" />
+        <argument android:name="client_host" />
+        <argument android:name="client_inn" />
+        <argument android:name="client_address" />
+        <action
+            android:id="@+id/action_blankClientFragment_to_nav_client"
+            app:destination="@id/nav_client" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_add_client"
+        android:name="com.example.invoice.ui.client.AddClientFragment"
+        android:label="@string/menu_add_client"
+        tools:layout="@layout/fragment_add_client" />
+    <fragment
+        android:id="@+id/productFromAddOrderBlankFragment"
+        android:name="com.example.invoice.ui.home.ProductFromAddOrderBlankFragment"
+        android:label="Редактировать"
+        tools:layout="@layout/fragment_product_from_add_order_blank" >
+        <argument android:name="product_price" />
+        <argument android:name="product_name" />
+        <argument android:name="product_count" />
+    </fragment>
+    <fragment
+        android:id="@+id/choseClientFragment"
+        android:name="com.example.invoice.ui.home.ChoseClientFragment"
+        android:label="@string/chose_shop"
+        tools:layout="@layout/fragment_add_order_chose_clients" />
+    <fragment
+        android:id="@+id/choseProductsFragment"
+        android:name="com.example.invoice.ui.home.ChoseProductsFragment"
+        android:label="@string/menu_add_product"
+        tools:layout="@layout/fragment_add_order_chose_products" />
+    <fragment
+        android:id="@+id/productCountBlankFragment"
+        android:name="com.example.invoice.ui.home.ProductCountBlankFragment"
+        android:label="Укажите количество"
+        tools:layout="@layout/fragment_product_count_blank" >
+        <argument android:name="product_name" />
+        <argument android:name="product_price" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderProductsFragment"
+        android:name="com.example.invoice.ui.order.OrderProductsFragment"
+        android:label="@string/menu_order"
+        tools:layout="@layout/fragment_order_products" >
+        <argument android:name="orderId" />
+        <argument
+            android:name="clientId" />
+        <argument
+            android:name="orderAmount" />
+        <argument
+            android:name="orderDate" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_order"
+        android:name="com.example.invoice.ui.order.OrdersFragment"
+        android:label="@string/menu_order"
+        tools:layout="@layout/fragment_order" >
+        <action
+            android:id="@+id/action_nav_order_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+</navigation>

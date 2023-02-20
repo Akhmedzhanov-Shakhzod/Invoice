@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Invoice</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Главное</string>
+    <string name="menu_client">Магазины</string>
+    <string name="menu_product">Ассортименты</string>
+    <string name="menu_order">Заказы</string>
+    <string name="menu_add_product">Добавить ассортимент</string>
+    <string name="menu_edit_product">Изменить ассортимент</string>
+    <string name="menu_edit_client">Изменить магазин</string>
+    <string name="menu_add_client">Добавить магазин</string>
+    <string name="add">Добавить</string>
+    <string name="name">Наименование</string>
+    <string name="host">ФИО Владельца</string>
+    <string name="inn">ИНН</string>
+    <string name="address">Адрес</string>
+    <string name="price">Цена</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="clear">Очистить</string>
+    <string name="chose_shop">Выбрать магазин</string>
+    <string name="amount">Сумма</string>
+    <string name="count">Количество</string>
+    <string name="ok">Продолжить</string>
+</resources>
