@@ -1,14 +1,19 @@
 package com.example.invoice.ui.order
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -42,6 +47,7 @@ class OrderProductsFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -92,14 +98,45 @@ class OrderProductsFragment : Fragment() {
                 MAIN.alert("Не получилось удалить заказ ${orderId.text}",1000)
             }
         }
-        generateInvoice.setOnClickListener{
-            generateWordFileFromTemplate("/sdcard/Download/template.docx",
-                ("/sdcard/Download/Накладная (" + clientName.text.toString() + ")" + DateTimeFormatter
-                    .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
-                    .withZone(ZoneOffset.UTC)
-                    .format(Instant.now())  + ".docx"),
-                products,
-                orderAmount.text.toString())
+        generateInvoice.setOnClickListener {
+            val fileName = "Накладная (" + clientName.text.toString() + ")" + DateTimeFormatter
+                .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
+                .withZone(ZoneOffset.UTC)
+                .format(Instant.now()) + ".docx"
+
+            // Создаем ContentResolver для работы с MediaStore
+            val resolver = MAIN.contentResolver
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, fileName)  // Название файла
+                put(MediaStore.Downloads.MIME_TYPE, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")  // MIME тип для Word документов
+                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)  // Путь к папке Загрузки
+            }
+
+            // Вставляем запись в MediaStore, которая создаст запись о файле
+            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+
+            if (uri != null) {
+                try {
+                    // Открываем поток для записи файла
+                    val outputStream = resolver.openOutputStream(uri)
+                    if (outputStream != null) {
+                        // Генерация файла с использованием потока
+                        generateWordFileFromTemplate(
+                            templatePath = File(MAIN.getExternalFilesDir(null), "template.docx").absolutePath,
+                            outputStream = outputStream,  // Передаем поток вместо пути
+                            products = products,
+                            amount = orderAmount.text.toString()
+                        )
+                        MAIN.alert("Накладная генерировано в папку Загрузки",1000)
+                        outputStream.close()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    MAIN.alert("Ошибка при сохранении файла", 1000)
+                }
+            } else {
+                MAIN.alert("Не удалось сохранить файл", 1000)
+            }
         }
     }
 
@@ -109,9 +146,11 @@ class OrderProductsFragment : Fragment() {
         dbManager.closeDb()
     }
 
-    private fun generateWordFileFromTemplate(templatePath: String, outputFilePath: String, products: ArrayList<OrderProduct>, amount: String) {
+    private fun generateWordFileFromTemplate(templatePath: String, outputStream: OutputStream, products: ArrayList<OrderProduct>, amount: String) {
 
         try{
+            copyTemplateToExternalFilesDir();
+
             val cal = Calendar.getInstance()
             val dayOfMonth = cal[Calendar.DAY_OF_MONTH]
             val month: String = cal.getDisplayName(
@@ -200,13 +239,8 @@ class OrderProductsFragment : Fragment() {
                 }
                 if (ContextCompat.checkSelfPermission(MAIN, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     // Разрешение на запись файлов уже есть, можно создавать файл
-                    val outFile = File(outputFilePath)
-                    outFile.createNewFile()
-
-                    val outputStream = FileOutputStream(outFile)
                     templateFile.write(outputStream)
                     templateFile.close()
-                    MAIN.alert("Накладная генерировано в папку Download",1000)
                 } else {
                     // Разрешение на запись файлов отсутствует, запрашиваем его у пользователя
                     ActivityCompat.requestPermissions(MAIN, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 200)
@@ -219,6 +253,26 @@ class OrderProductsFragment : Fragment() {
         catch (ex: Exception){
             ex.printStackTrace()
             MAIN.alert("Не получилось сгенирировать накладную, пожалуйста обращайтесь Ахмеджанову Шахзоду)",2500)
+        }
+    }
+
+    private fun copyTemplateToExternalFilesDir() {
+        try {
+            // Если файл шаблона находится в папке ресурсов raw
+            val inputStream = resources.openRawResource(R.raw.template)
+            val outputFile = File(MAIN.getExternalFilesDir(null), "template.docx")
+
+            if (!outputFile.exists()) {
+                // Копируем файл, если его еще нет
+                val outputStream = FileOutputStream(outputFile)
+                inputStream.copyTo(outputStream)
+                inputStream.close()
+                outputStream.close()
+                MAIN.alert("Шаблон успешно скопирован в директорию приложения", 1000)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            MAIN.alert("Ошибка при копировании шаблона", 1000)
         }
     }
 }
