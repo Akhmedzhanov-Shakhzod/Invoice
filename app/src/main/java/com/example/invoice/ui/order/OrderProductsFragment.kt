@@ -26,12 +26,15 @@ import com.example.invoice.ui.helper.items.Client
 import com.example.invoice.ui.helper.items.Order
 import com.example.invoice.ui.helper.items.OrderProduct
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.apache.poi.xwpf.usermodel.*
-import java.io.*
+import org.apache.poi.xwpf.usermodel.BodyElementType
+import org.apache.poi.xwpf.usermodel.XWPFDocument
+import org.apache.poi.xwpf.usermodel.XWPFTable
+import java.io.OutputStream
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class OrderProductsFragment : Fragment() {
 
@@ -122,8 +125,7 @@ class OrderProductsFragment : Fragment() {
                     if (outputStream != null) {
                         // Генерация файла с использованием потока
                         generateWordFileFromTemplate(
-                            templatePath = File(MAIN.getExternalFilesDir(null), "template.docx").absolutePath,
-                            outputStream = outputStream,  // Передаем поток вместо пути
+                            outputStream = outputStream,
                             products = products,
                             amount = orderAmount.text.toString()
                         )
@@ -146,11 +148,9 @@ class OrderProductsFragment : Fragment() {
         dbManager.closeDb()
     }
 
-    private fun generateWordFileFromTemplate(templatePath: String, outputStream: OutputStream, products: ArrayList<OrderProduct>, amount: String) {
+    private fun generateWordFileFromTemplate(outputStream: OutputStream, products: ArrayList<OrderProduct>, amount: String) {
 
         try{
-            copyTemplateToExternalFilesDir();
-
             val cal = Calendar.getInstance()
             val dayOfMonth = cal[Calendar.DAY_OF_MONTH]
             val month: String = cal.getDisplayName(
@@ -161,7 +161,8 @@ class OrderProductsFragment : Fragment() {
 
             if (ContextCompat.checkSelfPermission(MAIN, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 // Разрешение на запись файлов уже есть, можно создавать файл
-                val inputStream = FileInputStream(templatePath)
+                // Если файл шаблона находится в папке ресурсов raw
+                val inputStream = resources.openRawResource(R.raw.template)
                 val templateFile = XWPFDocument(inputStream)
                 var isStarted = false
                 for (element in templateFile.bodyElements) {
@@ -253,26 +254,6 @@ class OrderProductsFragment : Fragment() {
         catch (ex: Exception){
             ex.printStackTrace()
             MAIN.alert("Не получилось сгенирировать накладную, пожалуйста обращайтесь Ахмеджанову Шахзоду)",2500)
-        }
-    }
-
-    private fun copyTemplateToExternalFilesDir() {
-        try {
-            // Если файл шаблона находится в папке ресурсов raw
-            val inputStream = resources.openRawResource(R.raw.template)
-            val outputFile = File(MAIN.getExternalFilesDir(null), "template.docx")
-
-            if (!outputFile.exists()) {
-                // Копируем файл, если его еще нет
-                val outputStream = FileOutputStream(outputFile)
-                inputStream.copyTo(outputStream)
-                inputStream.close()
-                outputStream.close()
-                MAIN.alert("Шаблон успешно скопирован в директорию приложения", 1000)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            MAIN.alert("Ошибка при копировании шаблона", 1000)
         }
     }
 }
